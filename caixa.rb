@@ -5,11 +5,24 @@ SAIR = 0
 SALDO = 1
 DEPOSITO = 2
 SAQUE = 3
+conta = nil
 
-CONTA = Conta.new(cliente: Cliente.new(nome:"Gerson Silva do Nascimento", rg: "43933454-8", sexo: "Masculino"), salario: 3000, numero: 1, senha: 1234)
 
-def boas_vindas
- puts "Bem vindo(a) sr(a) #{CONTA.cliente.nome}"
+def login(numero, senha)
+  if Conta.find(numero) == []
+    puts 'Conta não encontrada!'
+    false
+  elsif Conta.find(numero).first.senha == senha
+  	puts 'Bem vindo'
+  	Conta.find(numero).first
+  else
+  	puts 'Senha incorreta!'
+  	false
+  end
+end
+
+def boas_vindas(conta)
+ puts "Bem vindo(a) sr(a) #{conta.cliente.nome}"
 end
 
 def menu
@@ -20,37 +33,45 @@ def menu
 
   op = gets.chomp.to_i
 end
-def mostra_saldo
-  puts "Seu saldo é R$#{CONTA.saldo}"
+def mostra_saldo(conta)
+  puts "Seu saldo é R$#{conta.saldo}"
 end
-def faz_deposito
+def faz_deposito(conta)
   puts 'Insira o valor'
     val = gets.chomp.to_f
-    CONTA.depositar val
+    conta.depositar val
     puts 'Operação efetuada com sucesso!'
-    mostra_saldo
+    mostra_saldo(conta)
 end
-def faz_saque
+def faz_saque(conta)
   puts 'Insira o valor'
     val = gets.chomp.to_f
-    if CONTA.sacar val
+    if conta.sacar val
       puts 'Operação efetuada com sucesso!'
-      mostra_saldo
+      mostra_saldo(conta)
     else 
       puts "Saldo Insuficiente!"
     end
     
 end
 
-boas_vindas
+puts 'Digite o numero da conta: '
+c = gets.chomp.to_i
+puts 'Digite a senha: '
+s = gets.chomp.to_i
+conta = login c,s
+if conta!= false
+  boas_vindas(conta)
 op = menu
 while op != SAIR
   if op==SALDO
-  	mostra_saldo
+  	mostra_saldo(conta)
   elsif op==DEPOSITO
-    faz_deposito
+    faz_deposito(conta)
   elsif op==SAQUE
-    faz_saque
+    faz_saque(conta)
   end #if 
   op = menu
 end #while
+end#if
+puts 'Tchau!'
